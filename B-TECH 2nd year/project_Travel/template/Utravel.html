@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Destination Recommender</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e0f7fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: #00796b;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 20px;
+        }
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .recommender {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .recommender h2 {
+            color: #00796b;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 90%;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button[type="submit"] {
+            background-color: #00796b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button[type="submit"]:hover {
+            background-color: #004d40;
+        }
+        #results {
+            margin-top: 30px;
+        }
+        #results h2 {
+            color: #00796b;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        a {
+            text-decoration: none;
+            color:white;
+        }
+        #btn {
+            position:absolute;
+            right:80px; 
+            top:50px;
+            font-size: larger;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background_0.3s;
+            font-weight: bolder;
+        }
+        #btnlist {
+            position:absolute;
+            right:210px; 
+            top:50px;
+            font-size: larger;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background_0.3s;
+            font-weight: bolder;
+        }
+        #Home-btn {
+            position:absolute;
+            left:80px; 
+            top:50px;
+            font-size: larger;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background_0.3s;
+            font-weight: bolder;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Travel Destination Recommender</h1>
+        <a href="{% url 'home' %}"><button type="submit" id="Home-btn">Home</button></a>
+        <a href="{% url 'Save_list' %}"><button type="submit" id="btnlist">List Saved </button></a>
+        <a href="{% url 'logout' %}"><button type="submit" id="btn">Log Out</button></a>
+    </header>
+    <main>
+        <section class="recommender">
+            <h2>Find Your Next Travel Destination</h2>
+            <form action="{% url 'udashboard' %}" method='Post'>
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="budget">Budget:</label>
+                    <input type="number" id="budget" name="budget" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="duration">Duration (days):</label>
+                    <input type="number" id="duration" name="duration" >
+                </div>
+                
+                <div class="form-group">
+                    <label for="season">Preferred Season:</label>
+                    <select id="season" name="season" >
+                        <option value="summer">Summer</option>
+                        <option value="winter">Winter</option>
+                        <option value="spring">Spring</option>
+                        <option value="autumn">Autumn</option>
+                    </select>
+                </div>
+                <button type="submit">Get Recommendations</button>
+            </form>
+        </section><br>
+        {% if destinations %}
+        <section class="recommender">
+            <h2>Recommendations</h2>
+            {% for destination in destinations %}
+            <div >
+                <div >
+                   <p><strong>Destination Name:{{destination.Name}}</strong></p>
+                </div>
+
+                <div >
+                    <p><strong>Budget :{{destination.budget}}</strong></p>
+                </div>
+
+                <div >
+                    <p><strong>Duration (days):{{destination.Duration}}</strong></p>
+                </div>
+
+                <div >
+                    <p><strong>Preferred Season:{{destination.Season}}</strong></p>
+                </div>
+                <div >
+                    <p><strong>Activates:{{destination.activate}}</strong></p>
+                </div>
+                <a href="{% url 'Save_destination' pk=destination.id %}"><button type='submit'>Save</button></a>
+            </div>
+            {% endfor %}
+        </section>
+        {% else %}
+        <section class="recommender">
+            <div >
+                <p><strong>No data Match for Recommended</strong></p>
+            </div>
+        </section>
+        {% endif %}
+    </main>
+</body>
+</html>
